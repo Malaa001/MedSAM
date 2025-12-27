@@ -6,16 +6,16 @@ from skimage import io, transform
 from tqdm import tqdm
 
 # convert 2D data to npy files, including images and corresponding masks
-modality = 'dd' # e.g., 'Dermoscopy 
-anatomy = 'dd'  # e.g., 'SkinCancer'
+modality = 'us' # e.g., 'Dermoscopy 
+anatomy = 'ty'  # e.g., 'SkinCancer'
 img_name_suffix = '.png' 
 gt_name_suffix = '.png' 
 prefix = modality + '_' + anatomy + '_'
 save_suffix = '.npy' 
 image_size = 1024
-img_path = 'path to /images' # path to the images
-gt_path = 'path to/labels' # path to the corresponding annotations
-npy_path = 'path to/data/npy/' + prefix[:-1] # save npy path e.g., MedSAM/data/npy/; don't miss the `/`
+img_path = '/home/exx/ultrasound_datasets/Dataset101_ThyroidDataset/imagesTr/' # path to the images
+gt_path = '/home/exx/ultrasound_datasets/Dataset101_ThyroidDataset/labelsTr' # path to the corresponding annotations
+npy_path = 'preprocessed_data/' + prefix[:-1] # save npy path e.g., MedSAM/data/npy/; don't miss the `/`
 os.makedirs(join(npy_path, "gts"), exist_ok=True)
 os.makedirs(join(npy_path, "imgs"), exist_ok=True)
 names = sorted(os.listdir(gt_path))
@@ -28,7 +28,8 @@ label_id_offset = 0
 do_intensity_cutoff = False # True for grey images
 #%% save preprocessed images and masks as npz files
 for name in tqdm(names):
-    image_name = name.split(gt_name_suffix)[0] + img_name_suffix
+    base = name.replace(gt_name_suffix, "")        # AIMI_100___00053
+    image_name = base + "_0000" + img_name_suffix  # AIMI_100___00053_0000.png
     gt_name = name
     npy_save_name = prefix + gt_name.split(gt_name_suffix)[0]+save_suffix
     gt_data_ori = np.uint8(io.imread(join(gt_path, gt_name)))
